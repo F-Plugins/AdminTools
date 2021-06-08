@@ -1,0 +1,11 @@
+Commands:
+  Storage:
+    NotFound: "Storage not found"
+  Fly:
+    On:
+      Success: "Successfully turned on your fly mode"
+      Already: "You are already on fly mode"
+    Off:
+      Success: "Successfully turned off your fly mode"
+      Already: "You arent on fly mode"
+    Error: "Correct command usage: /fly <on|off>"
