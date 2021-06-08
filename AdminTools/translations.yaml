@@ -1,6 +1,11 @@
 Commands:
   Storage:
     NotFound: "Storage not found"
+  WhoIs:
+    NotLooking: "You are not looking at any vehicle, barricade or structure"
+    Error: "Un expected error occurred while executing the command"
+    Success: "{Name} ({Id}) | Owner: {Player} ({Owner}) | Group: {Group}"
+
   Fly:
     On:
       Success: "Successfully turned on your fly mode"

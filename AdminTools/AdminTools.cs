@@ -31,11 +31,10 @@ namespace AdminTools
 
         protected override UniTask OnLoadAsync()
         {
-            _logger.LogInformation("Admin Tools plugin made by Feli");
-            _logger.LogInformation("Discord: https://discord.gg/4FF2548");
-
             _permissionregistry.RegisterPermission(this, _configuration["FlyService:FlyPermission"], "A permission to be able to fly");
 
+            _logger.LogInformation("Admin Tools plugin made by Feli");
+            _logger.LogInformation("Discord: https://discord.gg/4FF2548");
             return UniTask.CompletedTask;
         }
 

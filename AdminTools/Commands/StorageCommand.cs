@@ -45,10 +45,14 @@ namespace AdminTools.Commands
                     player.Player.Player.inventory.updateItems(7, storage.items);
                     player.Player.Player.inventory.sendStorage();
                 }
+                else
+                {
+                    throw new CommandWrongUsageException(_stringLocalizer["Commands:Storage:NotFound"]);
+                }
             }
             else
             {
-                await player.PrintMessageAsync(_stringLocalizer["Commands:Storage:NotFound"]);
+                throw new CommandWrongUsageException(_stringLocalizer["Commands:Storage:NotFound"]);
             }
             await UniTask.SwitchToThreadPool();
         }

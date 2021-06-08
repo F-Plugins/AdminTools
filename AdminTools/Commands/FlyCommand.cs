@@ -33,8 +33,7 @@ namespace AdminTools.Commands
 
             if(Context.Parameters.Length < 1)
             {
-                await player.PrintMessageAsync(_stringLocalizer["Commands:Fly:Error"]);
-                return;
+                throw new CommandWrongUsageException(_stringLocalizer["Commands:Fly:Error"]);
             }
             
             if(Context.Parameters.TryGet<string>(0, out string? value))
@@ -64,18 +63,17 @@ namespace AdminTools.Commands
                             }
                             break;
                         default:
-                            await player.PrintMessageAsync(_stringLocalizer["Commands:Fly:Error"]);
-                            break;
+                            throw new CommandWrongUsageException(_stringLocalizer["Commands:Fly:Error"]);
                     }
                 }
                 else
                 {
-                    await player.PrintMessageAsync(_stringLocalizer["Commands:Fly:Error"]);
+                    throw new CommandWrongUsageException(_stringLocalizer["Commands:Fly:Error"]);
                 }
             }
             else
             {
-                await player.PrintMessageAsync(_stringLocalizer["Commands:Fly:Error"]);
+                throw new CommandWrongUsageException(_stringLocalizer["Commands:Fly:Error"]);
             }
         }
     }
