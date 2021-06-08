@@ -1,11 +1,21 @@
 Commands:
   Storage:
     NotFound: "Storage not found"
+  Door:
+    NotFound: "Door not found"
   WhoIs:
     NotLooking: "You are not looking at any vehicle, barricade or structure"
     Error: "Un expected error occurred while executing the command"
     Success: "{Name} ({Id}) | Owner: {Player} ({Owner}) | Group: {Group}"
-
+  HandDestroyer:
+    On:
+      Success: "Successfully turned on your destroyer mode"
+      Already: "You are already on destroyer mode"
+    Off:
+      Success: "Successfully turned off your destroyer mode"
+      Already: "You arent on destroyer mode"
+    Destroy: "Sucessfully destroyed {Name}"
+    Error: "Correct command usage: /destroyer <on|off>"
   Fly:
     On:
       Success: "Successfully turned on your fly mode"

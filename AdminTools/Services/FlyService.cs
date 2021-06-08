@@ -43,7 +43,7 @@ namespace AdminTools.Services
                     var user = await _userManager.FindUserAsync(KnownActorTypes.Player, player.channel.owner.playerID.steamID.ToString(), UserSearchMode.FindById);
                     if(user != null)
                     {
-                        var check = await _permissionChecker.CheckPermissionAsync(user, _configuration.GetSection("FlyService:FlyPermission").Get<string>());
+                        var check = await _permissionChecker.CheckPermissionAsync(user, "commands.fly");
                         var find = _flyPlayers.FirstOrDefault(x => x.UserId == player.channel.owner.playerID.steamID.ToString());
                         if (check == PermissionGrantResult.Grant)
                         {
