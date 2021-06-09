@@ -1,12 +1,37 @@
 Commands:
   Storage:
     NotFound: "Storage not found"
+
   Door:
     NotFound: "Door not found"
+
   WhoIs:
     NotLooking: "You are not looking at any vehicle, barricade or structure"
     Error: "Un expected error occurred while executing the command"
     Success: "{Name} ({Id}) | Owner: {Player} ({Owner}) | Group: {Group}"
+
+  ClearInventory:
+    Success:
+      1: "Successfully wiped your inventory"
+      2: "Successfully wiped {Name} inventory"
+    Error: 
+      1: "Correct command usage: /ci | /ci <playerName>"
+      2: "Invalid player name"
+
+  Salvage:
+    Sucess:
+      1: "Successfully set your salvage time to {Time}"
+      2: "Successfully set {Name} salvage time to {Time}"
+    Error:
+      1: "Correct command usage: /salvage <time> | /salvage <playerName> <time>"
+      2: "Invalid player name"
+      3: "Invalid time parameter"
+
+  Clear:
+    Items: "Sucessfully cleared the items"
+    Vehicles: "Sucessfully cleared the vehicles"
+    Error: "Correct command usage: /clear <i> [Optional parameter: <range>] | /clear <ev> [Optional parameter: <range>]"
+
   HandDestroyer:
     On:
       Success: "Successfully turned on your destroyer mode"
@@ -16,6 +41,7 @@ Commands:
       Already: "You arent on destroyer mode"
     Destroy: "Sucessfully destroyed {Name}"
     Error: "Correct command usage: /destroyer <on|off>"
+
   Fly:
     On:
       Success: "Successfully turned on your fly mode"
@@ -24,6 +50,7 @@ Commands:
       Success: "Successfully turned off your fly mode"
       Already: "You arent on fly mode"
     Error: "Correct command usage: /fly <on|off>"
+
   Speed:
     Sucess: "Successfully set the speed of {Name} to {Speed}"
     Invalid: "Invalid player name provided"

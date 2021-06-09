@@ -15,6 +15,9 @@
     <Version>0.0.0</Version>
     <InformationalVersion>0.0.0</InformationalVersion>
     <PackageVersion>0.0.0</PackageVersion>
+    <Authors>Feli</Authors>
+    <Company>FPlugins</Company>
+    <Description>A plugin with some utilities for your admins</Description>
   </PropertyGroup>
 
   <ItemGroup>
