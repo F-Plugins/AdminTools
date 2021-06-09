@@ -5,6 +5,10 @@
 # Installation
 **Run openmod install Feli.AdminTools**
 
+### Plans
+- Add more commands
+- Add some options to make moderation better
+
 ## Commands
 - whois: A command know the owner of something you are looking at
   id: AdminTools.Commands.WhoIsCommand
