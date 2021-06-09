@@ -24,3 +24,8 @@ Commands:
       Success: "Successfully turned off your fly mode"
       Already: "You arent on fly mode"
     Error: "Correct command usage: /fly <on|off>"
+  Speed:
+    Sucess: "Successfully set the speed of {Name} to {Speed}"
+    Invalid: "Invalid player name provided"
+    Speed: "Invalid Speed"
+    Error: "Correct command usage: /speed <speed> | /speed <playerName> <speed>"

@@ -1,5 +1,6 @@
 ﻿using AdminTools.API;
 using Cysharp.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 using OpenMod.API.Ioc;
 using OpenMod.Unturned.Players;
 using OpenMod.Unturned.Users;
@@ -18,9 +19,12 @@ namespace AdminTools.Services
     {
         private List<string> _playerIds;
 
-        public HandDestroyerService()
+        private readonly IStringLocalizer _stringLocalizer;
+
+        public HandDestroyerService(IStringLocalizer stringLocalizer)
         {
             _playerIds = new List<string>();
+            _stringLocalizer = stringLocalizer;
         }
 
         public Task<bool> AddToDestroyerMode(UnturnedUser user)
@@ -36,14 +40,21 @@ namespace AdminTools.Services
 
         public async Task Destoy(UnturnedPlayer user)
         {
+            if (!_playerIds.Contains(user.SteamId.ToString())) return;
+
             await UniTask.SwitchToMainThread();
-            if (Physics.Raycast(user.Player.look.aim.position, user.Player.look.aim.forward, out RaycastHit hit, 15f, (int)ERayMask.BARRICADE | (int)ERayMask.VEHICLE | (int)ERayMask.STRUCTURE))
+            if (Physics.Raycast(user.Player.look.aim.position, user.Player.look.aim.forward, out RaycastHit hit, 500000f, (int)ERayMask.BARRICADE | (int)ERayMask.VEHICLE | (int)ERayMask.STRUCTURE | (int)ERayMask.RESOURCE))
             {
                 var vehicle = hit.transform.GetComponent<InteractableVehicle>();
 
                 if (vehicle != null)
                 {
                     VehicleManager.askVehicleDestroy(vehicle);
+
+                    await user.PrintMessageAsync(_stringLocalizer["Commands:HandDestroyer:Destroy", new
+                    {
+                        Name = vehicle.asset.name.Replace("_", " ")
+                    }]);
                     return;
                 }
 
@@ -53,6 +64,10 @@ namespace AdminTools.Services
 
                     BarricadeManager.destroyBarricade(region, x, y, plant, index);
 
+                    await user.PrintMessageAsync(_stringLocalizer["Commands:HandDestroyer:Destroy", new
+                    {
+                        Name = barricade.barricade.asset.name.Replace("_", " ")
+                    }]);
                     return;
                 }
 
@@ -60,8 +75,19 @@ namespace AdminTools.Services
                 {
                     var structure = region1.structures[index1];
 
-                    StructureManager.destroyStructure(region1, x1, y1, index1, structure.point);                   
+                    StructureManager.destroyStructure(region1, x1, y1, index1, structure.point);
+
+                    await user.PrintMessageAsync(_stringLocalizer["Commands:HandDestroyer:Destroy", new
+                    {
+                        Name = structure.structure.asset.name.Replace("_", " ")
+                    }]);
+                    return;
                 };
+
+                if(ResourceManager.tryGetRegion(hit.transform, out byte x2, out byte y2, out ushort index2))
+                {
+                    ResourceManager.ServerSetResourceDead(x2, y2, index2, hit.transform.position);
+                }
             }
             await UniTask.SwitchToThreadPool();
         }
