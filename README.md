@@ -9,6 +9,9 @@
 - Add more commands
 - Add some options to make moderation better
 
+### Discord
+- Discord: https://discord.gg/4FF2548
+
 ## Commands
 - whois: A command know the owner of something you are looking at
   id: AdminTools.Commands.WhoIsCommand
