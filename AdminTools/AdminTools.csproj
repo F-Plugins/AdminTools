@@ -18,6 +18,7 @@
     <Authors>Feli</Authors>
     <Company>FPlugins</Company>
     <Description>A plugin with some utilities for your admins</Description>
+    <PackageId>Feli.AdminTools</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
