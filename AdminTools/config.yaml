@@ -23,3 +23,22 @@ Broadcast:
     Message: "Announce by FPlugins"
   - ImageURL: "https://images-ext-1.discordapp.net/external/1Vg3rH_5wKUid81LpNF3YTOgl-x1Vvix0sNvfrhbtpE/https/unturneditems.com/media/253.png"
     Message: "{color=yellow}Just another announce{/color}"
+
+Restrictions:
+  Items:
+  - Ids:
+    - 4
+    - 15
+    BypassPermission: "bypass.default"
+  - ItemIds:
+    - 519
+    BypassPermission: "bypass.anotherone"
+
+  Vehicles:
+  - Ids:
+    - 32
+    BypassPermission: "bypass.taxi"
+  - VehicleIds:
+    - 32
+    - 321
+    BypassPermission: "bypass.anotherone"

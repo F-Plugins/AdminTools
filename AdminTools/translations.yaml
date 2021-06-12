@@ -1,4 +1,10 @@
 Commands:
+  Redirect:
+    Success: "Sending player to the server"
+    Error:
+      1: "Correct command usage: /redirect <playerName> <ip> <port> <force>"
+      2: "Player not found"
+
   Storage:
     NotFound: "Storage not found"
 
@@ -61,3 +67,7 @@ Commands:
     Invalid: "Invalid player name provided"
     Speed: "Invalid Speed"
     Error: "Correct command usage: /speed <speed> | /speed <playerName> <speed>"
+
+Restrictions:
+  Vehicles: "You do not have permissions for this vehicle"
+  Items: "You do not have permissions for this item"
