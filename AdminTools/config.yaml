@@ -13,3 +13,13 @@ Web:
     RequestDescription: "The repository of the plugin"
     RequestURL: "https://github.com/F-Plugins/AdminTools"
     Enabled: true
+
+Broadcast:
+  Timer: 500 # Seconds
+  RandomOrder: false
+  ServiceEnabled: true
+  Messages:
+  - ImageURL: "https://images-ext-1.discordapp.net/external/1Vg3rH_5wKUid81LpNF3YTOgl-x1Vvix0sNvfrhbtpE/https/unturneditems.com/media/253.png"
+    Message: "Announce by FPlugins"
+  - ImageURL: "https://images-ext-1.discordapp.net/external/1Vg3rH_5wKUid81LpNF3YTOgl-x1Vvix0sNvfrhbtpE/https/unturneditems.com/media/253.png"
+    Message: "{color=yellow}Just another announce{/color}"
