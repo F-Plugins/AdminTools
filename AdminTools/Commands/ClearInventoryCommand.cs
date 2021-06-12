@@ -39,7 +39,7 @@ namespace AdminTools.Commands
                     await UniTask.SwitchToMainThread();
                     ClearPlayerInventory(player.Player.Player);
                     await UniTask.SwitchToThreadPool();
-                    await player.PrintMessageAsync(_stringLocalizer["Commands:ClearInventory:Sucess:1"]);
+                    await player.PrintMessageAsync(_stringLocalizer["Commands:ClearInventory:Success:1"]);
                     break;
                 case 1:
 
@@ -51,7 +51,7 @@ namespace AdminTools.Commands
                         ClearPlayerInventory(ass.Player.Player);
                         await UniTask.SwitchToThreadPool();
 
-                        await player.PrintMessageAsync(_stringLocalizer["Commands:ClearInventory:Sucess:2", new
+                        await player.PrintMessageAsync(_stringLocalizer["Commands:ClearInventory:Success:2", new
                         {
                             Name = ass.DisplayName
                         }]);
@@ -78,7 +78,7 @@ namespace AdminTools.Commands
                     player.inventory.removeItem(i, k);
                 }
             }
-
+            
             void Remove()
             {
                 player.inventory.removeItem(2, 0);

@@ -19,7 +19,7 @@ Commands:
       2: "Invalid player name"
 
   Salvage:
-    Sucess:
+    Success:
       1: "Successfully set your salvage time to {Time}"
       2: "Successfully set {Name} salvage time to {Time}"
     Error:
@@ -28,8 +28,8 @@ Commands:
       3: "Invalid time parameter"
 
   Clear:
-    Items: "Sucessfully cleared the items"
-    Vehicles: "Sucessfully cleared the vehicles"
+    Items: "Successfully cleared the items"
+    Vehicles: "Successfully cleared the vehicles"
     Error: "Correct command usage: /clear <i> [Optional parameter: <range>] | /clear <ev> [Optional parameter: <range>]"
 
   HandDestroyer:
@@ -38,9 +38,14 @@ Commands:
       Already: "You are already on destroyer mode"
     Off:
       Success: "Successfully turned off your destroyer mode"
-      Already: "You arent on destroyer mode"
-    Destroy: "Sucessfully destroyed {Name}"
+      Already: "You are not on destroyer mode"
+    Destroy: "Successfully destroyed {Name}"
     Error: "Correct command usage: /destroyer <on|off>"
+
+  SetBalance:
+    Success: "Successfully set the balance of the player {Name} to ${Balance}"
+    Invalid: "Invalid player name"
+    Error: "Correct command usage: /setbal <playerName> <balance>"
 
   Fly:
     On:
@@ -48,11 +53,11 @@ Commands:
       Already: "You are already on fly mode"
     Off:
       Success: "Successfully turned off your fly mode"
-      Already: "You arent on fly mode"
+      Already: "You are not on fly mode"
     Error: "Correct command usage: /fly <on|off>"
 
   Speed:
-    Sucess: "Successfully set the speed of {Name} to {Speed}"
+    Success: "Successfully set the speed of {Name} to {Speed}"
     Invalid: "Invalid player name provided"
     Speed: "Invalid Speed"
     Error: "Correct command usage: /speed <speed> | /speed <playerName> <speed>"

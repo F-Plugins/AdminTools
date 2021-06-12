@@ -38,7 +38,7 @@ namespace AdminTools.Commands
                         await UniTask.SwitchToMainThread();
                         player.Player.Player.movement.sendPluginSpeedMultiplier(value);
                         await UniTask.SwitchToThreadPool();
-                        await player.PrintMessageAsync(_stringLocalizer["Commands:Speed:Sucess", new
+                        await player.PrintMessageAsync(_stringLocalizer["Commands:Speed:Success", new
                         {
                             Name = player.DisplayName,
                             Speed = value
@@ -62,7 +62,7 @@ namespace AdminTools.Commands
                                 await UniTask.SwitchToMainThread();
                                 find.Player.Player.movement.sendPluginSpeedMultiplier(speed);
                                 await UniTask.SwitchToThreadPool();
-                                await player.PrintMessageAsync(_stringLocalizer["Commands:Speed:Sucess", new
+                                await player.PrintMessageAsync(_stringLocalizer["Commands:Speed:Success", new
                                 {
                                     Name = user.DisplayName,
                                     Speed = speed

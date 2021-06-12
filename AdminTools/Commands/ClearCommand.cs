@@ -32,7 +32,7 @@ namespace AdminTools.Commands
             if (Context.Parameters.TryGet<string>(0, out string? value))
             {
                 await UniTask.SwitchToMainThread();
-                if (value == "i")
+                if (value == "i" || value == "items")
                 {
                     if (Context.Parameters.TryGet<float>(1, out float itemsRange))
                     {
@@ -45,20 +45,23 @@ namespace AdminTools.Commands
 
                     await player.PrintMessageAsync(_stringLocalizer["Commands:Clear:Items"]);
                 }
-                else if (value == "ev")
+                else if (value == "ev" || value == "emptyvehicles")
                 {
                     if(Context.Parameters.TryGet<float>(1, out float vehicleRange))
                     {
                         var vehicles = new List<InteractableVehicle>();
                         VehicleManager.getVehiclesInRadius(player.Player.Player.transform.position, vehicleRange, vehicles);
-                        foreach(var vehicle in vehicles)
+                        foreach(var vehicle in vehicles.Where(x => x.isEmpty).ToList())
                         {
                             VehicleManager.askVehicleDestroy(vehicle);
                         }
                     }
                     else
                     {
-                        VehicleManager.ReceiveDestroyAllVehicles();
+                        foreach(var vehicle in VehicleManager.vehicles.Where(x => x.isEmpty).ToList())
+                        {
+                            VehicleManager.askVehicleDestroy(vehicle);
+                        }
                     }
 
                     await player.PrintMessageAsync(_stringLocalizer["Commands:Clear:Vehicles"]);

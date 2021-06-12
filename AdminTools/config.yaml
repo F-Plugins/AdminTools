@@ -1,0 +1,15 @@
+Web:
+  OnJoin: # This one will be called when the player joins the server
+    RequestDescription: "The discord server of fplugins"
+    RequestURL: "https://discord.gg/4FF2548"
+    Enabled: true
+
+  WebCommands: # This on will be called when the player writes on the command
+  - CommandName: "discord"
+    RequestDescription: "The discord server of fplugins"
+    RequestURL: "https://discord.gg/4FF2548"
+    Enabled: true
+  - CommandName: "github"
+    RequestDescription: "The repository of the plugin"
+    RequestURL: "https://github.com/F-Plugins/AdminTools"
+    Enabled: true

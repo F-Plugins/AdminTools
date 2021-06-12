@@ -56,7 +56,7 @@ namespace AdminTools.Commands
                         case "off":
                             if (await _handDestroyerService.RemoveFromDestroyerMode(player))
                             {
-                                await player.PrintMessageAsync(_stringLocalizer["Commands:HandDestroyer:Off:Sucess"]);
+                                await player.PrintMessageAsync(_stringLocalizer["Commands:HandDestroyer:Off:Success"]);
                             }
                             else
                             {

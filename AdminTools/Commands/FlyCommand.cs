@@ -27,7 +27,7 @@ namespace AdminTools.Commands
             _stringLocalizer = stringLocalizer;
         }
 
-        protected async override UniTask OnExecuteAsync()
+        protected override async UniTask OnExecuteAsync()
         {
             var player = (UnturnedUser)Context.Actor;
 
@@ -55,7 +55,7 @@ namespace AdminTools.Commands
                         case "off":
                             if (await _flyService.RemoveFromFlyMode(player))
                             {
-                                await player.PrintMessageAsync(_stringLocalizer["Commands:Fly:Off:Sucess"]);
+                                await player.PrintMessageAsync(_stringLocalizer["Commands:Fly:Off:Success"]);
                             }
                             else
                             {

@@ -27,7 +27,7 @@ namespace AdminTools.Commands
             _stringLocalizer = stringLocalizer;
         }
 
-        protected async override UniTask OnExecuteAsync()
+        protected override async UniTask OnExecuteAsync()
         {
             var player = (UnturnedUser)Context.Actor;
 

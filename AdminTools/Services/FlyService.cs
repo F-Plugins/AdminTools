@@ -47,16 +47,16 @@ namespace AdminTools.Services
                         var find = _flyPlayers.FirstOrDefault(x => x.UserId == player.channel.owner.playerID.steamID.ToString());
                         if (check == PermissionGrantResult.Grant)
                         {
-                            if(key == 4 && state)
+                            if (key == 4 && state)
                             {
                                 player.movement.sendPluginGravityMultiplier(1);
                             }
-                            else if(key == 3 && state && !find.IsChanging)
+                            else if (key == 3 && state && !find.IsChanging)
                             {
                                 find.IsChanging = true;
                                 player.movement.sendPluginGravityMultiplier(-0.2f);
                             }
-                            if(key == 3 && !state && find.IsChanging)
+                            if (key == 3 && !state && find.IsChanging)
                             {
                                 player.movement.sendPluginGravityMultiplier(0);
                                 find.IsChanging = false;
