@@ -1,44 +1,33 @@
 Web:
-  OnJoin: # This one will be called when the player joins the server
-    RequestDescription: "The discord server of fplugins"
+  OnJoin:
+    RequestDescription: "The discord server of F-Plugins"
     RequestURL: "https://discord.gg/4FF2548"
-    Enabled: true
-
-  WebCommands: # This on will be called when the player writes on the command
+    Enabled: false
+  WebCommands:
   - CommandName: "discord"
-    RequestDescription: "The discord server of fplugins"
+    RequestDescription: "The discord server of F-Plugins"
     RequestURL: "https://discord.gg/4FF2548"
-    Enabled: true
+    Enabled: false
   - CommandName: "github"
     RequestDescription: "The repository of the plugin"
     RequestURL: "https://github.com/F-Plugins/AdminTools"
-    Enabled: true
-
+    Enabled: false
 Broadcast:
-  Timer: 500 # Seconds
+  Timer: 600
   RandomOrder: false
-  ServiceEnabled: true
+  ServiceEnabled: false
   Messages:
   - ImageURL: "https://images-ext-1.discordapp.net/external/1Vg3rH_5wKUid81LpNF3YTOgl-x1Vvix0sNvfrhbtpE/https/unturneditems.com/media/253.png"
     Message: "Announce by FPlugins"
   - ImageURL: "https://images-ext-1.discordapp.net/external/1Vg3rH_5wKUid81LpNF3YTOgl-x1Vvix0sNvfrhbtpE/https/unturneditems.com/media/253.png"
     Message: "{color=yellow}Just another announce{/color}"
-
 Restrictions:
   Items:
   - Ids:
-    - 4
-    - 15
+    - 0
     BypassPermission: "bypass.default"
-  - ItemIds:
-    - 519
-    BypassPermission: "bypass.anotherone"
-
   Vehicles:
   - Ids:
-    - 32
-    BypassPermission: "bypass.taxi"
-  - VehicleIds:
-    - 32
-    - 321
-    BypassPermission: "bypass.anotherone"
+    - 186
+    - 187
+    BypassPermission: "bypass.deafult"
