@@ -2,16 +2,14 @@
 using AdminTools.Models;
 using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using OpenMod.API.Permissions;
 using OpenMod.API.Plugins;
 using OpenMod.Unturned.Plugins;
-using SDG.Unturned;
 using System;
 using System.Collections.Generic;
 
-[assembly: PluginMetadata("Feli.AdminTools", DisplayName = "AdminTools", Author = "Feli", Website = "fplugins.com")]
+[assembly: PluginMetadata("Feli.AdminTools", DisplayName = "AdminTools", Author = "Feli", Website = "fplugins.com", Description = "A plugin with some utilities for your admins")]
 
 namespace AdminTools
 {
@@ -19,42 +17,43 @@ namespace AdminTools
     {
         private readonly ILogger<AdminTools> _logger;
         private readonly IConfiguration _configuration;
-        private readonly IBroadcastService _broadcastService;
-        private readonly IPermissionRegistry _permissionRegistry;
+        private readonly IBroadcastService _broadcast;
+        private readonly IPermissionRegistry _permission;
 
         public AdminTools(
             ILogger<AdminTools> logger,
             IConfiguration configuration,
             IBroadcastService broadcastService,
             IPermissionRegistry permissionRegistry,
-            IServiceProvider serviceProvider) : base(serviceProvider)
+            IServiceProvider serviceProvider
+        ) : base(serviceProvider)
         {
             _logger = logger;
             _configuration = configuration;
-            _broadcastService = broadcastService;
-            _permissionRegistry = permissionRegistry;
+            _broadcast = broadcastService;
+            _permission = permissionRegistry;
         }
 
         protected override UniTask OnLoadAsync()
         {
             if (_configuration.GetSection("Broadcast:ServiceEnabled").Get<bool>())
             {
-                _broadcastService.StartBroadcastAsync();
+                _broadcast.StartBroadcastAsync();
             }
 
-            foreach(var restrict in _configuration.GetSection("Restrictions:Items").Get<List<Restriction>>())
-            {
-                if(restrict.BypassPermission != null)
-                {
-                    _permissionRegistry.RegisterPermission(this, restrict.BypassPermission, "A bypass permission for restrictions");
-                }
-            }
-
-            foreach (var restrict in _configuration.GetSection("Restrictions:Vehicles").Get<List<Restriction>>())
+            foreach (Restriction restrict in _configuration.GetSection("Restrictions:Items").Get<List<Restriction>>())
             {
                 if (restrict.BypassPermission != null)
                 {
-                    _permissionRegistry.RegisterPermission(this, restrict.BypassPermission, "A bypass permission for restrictions");
+                    _permission.RegisterPermission(this, restrict.BypassPermission, "A bypass permission for restrictions");
+                }
+            }
+
+            foreach (Restriction restrict in _configuration.GetSection("Restrictions:Vehicles").Get<List<Restriction>>())
+            {
+                if (restrict.BypassPermission != null)
+                {
+                    _permission.RegisterPermission(this, restrict.BypassPermission, "A bypass permission for restrictions");
                 }
             }
 

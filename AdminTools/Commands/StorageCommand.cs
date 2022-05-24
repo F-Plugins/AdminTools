@@ -1,16 +1,10 @@
 ﻿using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Localization;
-using OpenMod.API.Users;
 using OpenMod.Core.Commands;
-using OpenMod.Core.Users;
 using OpenMod.Unturned.Commands;
 using OpenMod.Unturned.Users;
 using SDG.Unturned;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace AdminTools.Commands
@@ -20,23 +14,24 @@ namespace AdminTools.Commands
     [CommandActor(typeof(UnturnedUser))]
     public class StorageCommand : UnturnedCommand
     {
-        private readonly IStringLocalizer _stringLocalizer;
+        private readonly IStringLocalizer _localizer;
 
         public StorageCommand(IStringLocalizer stringLocalizer, IServiceProvider serviceProvider) : base(serviceProvider)
         {
-            _stringLocalizer = stringLocalizer;
+            _localizer = stringLocalizer;
         }
 
         protected override async UniTask OnExecuteAsync()
         {
-            var player = (UnturnedUser)Context.Actor;
+            UnturnedUser player = (UnturnedUser)Context.Actor;
 
             await UniTask.SwitchToMainThread();
-            if (Physics.Raycast(player.Player.Player.look.aim.position, player.Player.Player.look.aim.forward, out RaycastHit hit, 15f, (int)ERayMask.BARRICADE))
+            Vector3 position = player.Player.Player.look.aim.position;
+            Vector3 forward = player.Player.Player.look.aim.forward;
+            if (Physics.Raycast(position, forward, out RaycastHit hit, 5f, (int)ERayMask.BARRICADE))
             {
-                var storage = hit.transform.GetComponent<InteractableStorage>();
-
-                if(storage != null)
+                InteractableStorage storage = hit.transform.GetComponent<InteractableStorage>();
+                if (storage != null)
                 {
                     storage.isOpen = true;
                     storage.opener = player.Player.Player;
@@ -47,12 +42,12 @@ namespace AdminTools.Commands
                 }
                 else
                 {
-                    throw new CommandWrongUsageException(_stringLocalizer["Commands:Storage:NotFound"]);
+                    throw new CommandWrongUsageException(_localizer["Commands:Storage:NotFound"]);
                 }
             }
             else
             {
-                throw new CommandWrongUsageException(_stringLocalizer["Commands:Storage:NotFound"]);
+                throw new CommandWrongUsageException(_localizer["Commands:Storage:NotFound"]);
             }
             await UniTask.SwitchToThreadPool();
         }

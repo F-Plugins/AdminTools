@@ -5,10 +5,6 @@ using OpenMod.Unturned.Commands;
 using OpenMod.Unturned.Users;
 using SDG.Unturned;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace AdminTools.Commands
@@ -18,34 +14,36 @@ namespace AdminTools.Commands
     [CommandActor(typeof(UnturnedUser))]
     public class DoorCommand : UnturnedCommand
     {
-        private readonly IStringLocalizer _stringLocalizer;
+        private readonly IStringLocalizer _localizer;
 
         public DoorCommand(IServiceProvider serviceProvider, IStringLocalizer stringLocalizer) : base(serviceProvider)
         {
-            _stringLocalizer = stringLocalizer;
+            _localizer = stringLocalizer;
         }
 
         protected override async UniTask OnExecuteAsync()
         {
-            var player = (UnturnedUser)Context.Actor;
+            UnturnedUser player = (UnturnedUser)Context.Actor;
 
             await UniTask.SwitchToMainThread();
-            if (Physics.Raycast(player.Player.Player.look.aim.position, player.Player.Player.look.aim.forward, out RaycastHit hit, 15f, (int)ERayMask.BARRICADE))
-            {
-                var door = hit.transform.GetComponent<InteractableDoorHinge>();
 
+            Vector3 position = player.Player.Player.look.aim.position;
+            Vector3 forward = player.Player.Player.look.aim.forward;
+            if (Physics.Raycast(position, forward, out RaycastHit hit, 5f, (int)ERayMask.BARRICADE))
+            {
+                InteractableDoorHinge door = hit.transform.GetComponent<InteractableDoorHinge>();
                 if (door != null)
                 {
                     BarricadeManager.ServerSetDoorOpen(door.door, !door.door.isOpen);
                 }
                 else
                 {
-                    throw new CommandWrongUsageException(_stringLocalizer["Commands:Door:NotFound"]);
+                    throw new CommandWrongUsageException(_localizer["Commands:Door:NotFound"]);
                 }
             }
             else
             {
-                throw new CommandWrongUsageException(_stringLocalizer["Commands:Door:NotFound"]);
+                throw new CommandWrongUsageException(_localizer["Commands:Door:NotFound"]);
             }
             await UniTask.SwitchToThreadPool();
         }

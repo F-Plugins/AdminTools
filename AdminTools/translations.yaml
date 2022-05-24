@@ -1,73 +1,49 @@
 Commands:
-  Redirect:
-    Success: "Sending player to the server"
-    Error:
-      1: "Correct command usage: /redirect <playerName> <ip> <port> <force>"
-      2: "Player not found"
-
-  Storage:
-    NotFound: "Storage not found"
-
-  Door:
-    NotFound: "Door not found"
-
-  WhoIs:
-    NotLooking: "You are not looking at any vehicle, barricade or structure"
-    Error: "Un expected error occurred while executing the command"
-    Success: "{Name} ({Id}) | Owner: {Player} ({Owner}) | Group: {Group}"
-
-  ClearInventory:
-    Success:
-      1: "Successfully wiped your inventory"
-      2: "Successfully wiped {Name} inventory"
-    Error: 
-      1: "Correct command usage: /ci | /ci <playerName>"
-      2: "Invalid player name"
-
-  Salvage:
-    Success:
-      1: "Successfully set your salvage time to {Time}"
-      2: "Successfully set {Name} salvage time to {Time}"
-    Error:
-      1: "Correct command usage: /salvage <time> | /salvage <playerName> <time>"
-      2: "Invalid player name"
-      3: "Invalid time parameter"
-
   Clear:
     Items: "Successfully cleared the items"
     Vehicles: "Successfully cleared the vehicles"
-    Error: "Correct command usage: /clear <i> [Optional parameter: <range>] | /clear <ev> [Optional parameter: <range>]"
-
-  HandDestroyer:
-    On:
-      Success: "Successfully turned on your destroyer mode"
-      Already: "You are already on destroyer mode"
-    Off:
-      Success: "Successfully turned off your destroyer mode"
-      Already: "You are not on destroyer mode"
-    Destroy: "Successfully destroyed {Name}"
-    Error: "Correct command usage: /destroyer <on|off>"
-
-  SetBalance:
-    Success: "Successfully set the balance of the player {Name} to ${Balance}"
+    Error: "Command usage: /clear <i|items|ev|emptyvehicles> [range]"
+  ClearInventory:
+    Success: "Successfully wiped your inventory"
+    SuccessNamed: "Successfully wiped {Name} inventory"
     Invalid: "Invalid player name"
-    Error: "Correct command usage: /setbal <playerName> <balance>"
-
-  Fly:
-    On:
-      Success: "Successfully turned on your fly mode"
-      Already: "You are already on fly mode"
-    Off:
-      Success: "Successfully turned off your fly mode"
-      Already: "You are not on fly mode"
-    Error: "Correct command usage: /fly <on|off>"
-
+    Error: "Command usage: /clearinventory [player]"
+  Door:
+    NotFound: "Door not found"
+  HandDestroyer:
+    TurnOn: "Successfully turned on your destroyer mode"
+    TurnOff: "Successfully turned off your destroyer mode"
+    Destroy: "Successfully destroyed {Name}"
+  MaxSkills:
+    Success: "Successfully set {Name} skills to max"
+  Redirect:
+    Success: "Sending player to the server"
+    NotFound: "Player not found"
+    Error: "Command usage: /redirect <player> <ip> <port> [force] [password]"
+  Refuel:
+    Success: "Successfully refuel {Name}"
+  Repair:
+    Success: "Successfully repair {Name}"
+  Salvage:
+    Success: "Successfully set {Name} salvage time to {Time}"
+    Invalid: "Invalid player name"
+    Error: "Command usage: /salvage [player] <time>"
+  SetBalance:
+    Success: "Successfully set {Name} balance to {Balance}"
+    Invalid: "Invalid player name"
+    Error: "Command usage: /setbalance [player] <balance>"
   Speed:
     Success: "Successfully set the speed of {Name} to {Speed}"
     Invalid: "Invalid player name provided"
     Speed: "Invalid Speed"
-    Error: "Correct command usage: /speed <speed> | /speed <playerName> <speed>"
-
+    Error: "Command usage: /speed [player] <speed>"
+  Storage:
+    NotFound: "Storage not found"
+  WhoIs:
+    Success: "{Name} ({Id}) | Health: {Health} | Owner: {Player} ({Owner}) | Group: {Group}"
+    SuccessBed: "{Name} ({Id}) | Health: {Health} | Owner: {Player} ({Owner}) | Group: {Group} | Claimed: {Claim}"
+    NotLooking: "You are not looking at any vehicle, barricade or structure"
+    Error: "Un expected error occurred while executing the command"
 Restrictions:
-  Vehicles: "You do not have permissions for this vehicle"
   Items: "You do not have permissions for this item"
+  Vehicles: "You do not have permissions for this vehicle"

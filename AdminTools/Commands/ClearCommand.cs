@@ -7,27 +7,25 @@ using SDG.Unturned;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdminTools.Commands
 {
     [Command("clear")]
-    [CommandActor(typeof(UnturnedUser))]
-    [CommandSyntax("/clear i | /clear ev")]
     [CommandDescription("A command to clear items or vehicles")]
+    [CommandSyntax("<i|items|ev|emptyvehicles> [range]")]
+    [CommandActor(typeof(UnturnedUser))]
     public class ClearCommand : UnturnedCommand
     {
-        private readonly IStringLocalizer _stringLocalizer;
+        private readonly IStringLocalizer _localizer;
 
         public ClearCommand(IServiceProvider serviceProvider, IStringLocalizer stringLocalizer) : base(serviceProvider)
         {
-            _stringLocalizer = stringLocalizer;
+            _localizer = stringLocalizer;
         }
 
         protected override async UniTask OnExecuteAsync()
         {
-            var player = (UnturnedUser)Context.Actor;
+            UnturnedUser player = (UnturnedUser)Context.Actor;
 
             if (Context.Parameters.TryGet<string>(0, out string? value))
             {
@@ -42,39 +40,37 @@ namespace AdminTools.Commands
                     {
                         ItemManager.askClearAllItems();
                     }
-
-                    await player.PrintMessageAsync(_stringLocalizer["Commands:Clear:Items"]);
+                    await player.PrintMessageAsync(_localizer["Commands:Clear:Items"]);
                 }
                 else if (value == "ev" || value == "emptyvehicles")
                 {
-                    if(Context.Parameters.TryGet<float>(1, out float vehicleRange))
+                    if (Context.Parameters.TryGet<float>(1, out float vehicleRange))
                     {
-                        var vehicles = new List<InteractableVehicle>();
+                        List<InteractableVehicle> vehicles = new List<InteractableVehicle>();
                         VehicleManager.getVehiclesInRadius(player.Player.Player.transform.position, vehicleRange, vehicles);
-                        foreach(var vehicle in vehicles.Where(x => x.isEmpty).ToList())
+                        foreach (InteractableVehicle vehicle in vehicles.Where(x => x.isEmpty).ToList())
                         {
                             VehicleManager.askVehicleDestroy(vehicle);
                         }
                     }
                     else
                     {
-                        foreach(var vehicle in VehicleManager.vehicles.Where(x => x.isEmpty).ToList())
+                        foreach (InteractableVehicle vehicle in VehicleManager.vehicles.Where(x => x.isEmpty).ToList())
                         {
                             VehicleManager.askVehicleDestroy(vehicle);
                         }
                     }
-
-                    await player.PrintMessageAsync(_stringLocalizer["Commands:Clear:Vehicles"]);
+                    await player.PrintMessageAsync(_localizer["Commands:Clear:Vehicles"]);
                 }
                 else
                 {
-                    throw new CommandWrongUsageException(_stringLocalizer["Commands:Clear:Error"]);
+                    throw new CommandWrongUsageException(_localizer["Commands:Clear:Error"]);
                 }
                 await UniTask.SwitchToThreadPool();
             }
             else
             {
-                throw new CommandWrongUsageException(_stringLocalizer["Commands:Clear:Error"]);
+                throw new CommandWrongUsageException(_localizer["Commands:Clear:Error"]);
             }
         }
     }

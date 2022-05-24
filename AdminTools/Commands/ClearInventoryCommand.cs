@@ -7,97 +7,92 @@ using OpenMod.Unturned.Commands;
 using OpenMod.Unturned.Users;
 using SDG.Unturned;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdminTools.Commands
 {
     [Command("clearinventory")]
-    [CommandDescription("A command to wipe players inventory")]
-    [CommandSyntax("/ci | /ci <playerName>")]
-    [CommandActor(typeof(UnturnedUser))]
     [CommandAlias("ci")]
     [CommandAlias("wipeinventory")]
+    [CommandDescription("A command to wipe players inventory")]
+    [CommandSyntax("[player]")]
+    [CommandActor(typeof(UnturnedUser))]
     public class ClearInventoryCommand : UnturnedCommand
     {
-        private readonly IStringLocalizer _stringLocalizer;
+        private readonly IStringLocalizer _localizer;
 
         public ClearInventoryCommand(IServiceProvider serviceProvider, IStringLocalizer stringLocalizer) : base(serviceProvider)
         {
-            _stringLocalizer = stringLocalizer;
+            _localizer = stringLocalizer;
         }
 
         protected override async UniTask OnExecuteAsync()
         {
-            var player = (UnturnedUser)Context.Actor;
-            
-            switch (Context.Parameters.Length) 
+            UnturnedUser player = (UnturnedUser)Context.Actor;
+
+            switch (Context.Parameters.Length)
             {
                 case 0:
-                    await UniTask.SwitchToMainThread();
                     ClearPlayerInventory(player.Player.Player);
-                    await UniTask.SwitchToThreadPool();
-                    await player.PrintMessageAsync(_stringLocalizer["Commands:ClearInventory:Success:1"]);
+                    await player.PrintMessageAsync(_localizer["Commands:ClearInventory:Success"]);
                     break;
                 case 1:
-
-                    if (Context.Parameters.TryGet<IUser>(0, out IUser? user))
+                    if (Context.Parameters.TryGet<IUser>(0, out IUser? iuser))
                     {
-                        var ass = (user as UnturnedUser)!;
-
-                        await UniTask.SwitchToMainThread();
-                        ClearPlayerInventory(ass.Player.Player);
-                        await UniTask.SwitchToThreadPool();
-
-                        await player.PrintMessageAsync(_stringLocalizer["Commands:ClearInventory:Success:2", new
+                        UnturnedUser user = (iuser as UnturnedUser)!;
+                        ClearPlayerInventory(user.Player.Player);
+                        await player.PrintMessageAsync(_localizer["Commands:ClearInventory:SuccessNamed", new
                         {
-                            Name = ass.DisplayName
+                            Name = user.DisplayName
                         }]);
                     }
                     else
                     {
-                        throw new UserFriendlyException(_stringLocalizer["Commands:ClearInventory:Error:2"]);
+                        throw new UserFriendlyException(_localizer["Commands:ClearInventory:Invalid"]);
                     }
-
                     break;
                 default:
-                    throw new CommandWrongUsageException(_stringLocalizer["Commands:ClearInventory:Error:1"]);
+                    throw new CommandWrongUsageException(_localizer["Commands:ClearInventory:Error"]);
             }
         }
 
-        private void ClearPlayerInventory(Player player)
+        async private void ClearPlayerInventory(Player player)
         {
+            await UniTask.SwitchToMainThread();
+
             for (byte i = 0; i < PlayerInventory.PAGES - 2; i++)
             {
-                var count = player.inventory.getItemCount(i);
-
+                int count = player.inventory.getItemCount(i);
                 for (byte k = 0; k < count; k++)
                 {
                     player.inventory.removeItem(i, k);
                 }
             }
-            
-            void Remove()
+
+            Guid Int2Guid(int value)
             {
-                player.inventory.removeItem(2, 0);
+                byte[] bytes = new byte[16];
+                BitConverter.GetBytes(value).CopyTo(bytes, 0);
+                return new Guid(bytes);
             }
 
-            player.clothing.ReceiveWearBackpack(0, 0, new byte[0]);
+            void Remove() => player.inventory.removeItem(2, 0);
+
+            player.clothing.ReceiveWearBackpack(Int2Guid(0), 0, new byte[0]);
             Remove();
-            player.clothing.ReceiveWearGlasses(0, 0, new byte[0]);
+            player.clothing.ReceiveWearGlasses(Int2Guid(0), 0, new byte[0]);
             Remove();
-            player.clothing.ReceiveWearHat(0, 0, new byte[0]);
+            player.clothing.ReceiveWearHat(Int2Guid(0), 0, new byte[0]);
             Remove();
-            player.clothing.ReceiveWearMask(0, 0, new byte[0]);
+            player.clothing.ReceiveWearMask(Int2Guid(0), 0, new byte[0]);
             Remove();
-            player.clothing.ReceiveWearPants(0, 0, new byte[0]);
+            player.clothing.ReceiveWearPants(Int2Guid(0), 0, new byte[0]);
             Remove();
-            player.clothing.ReceiveWearShirt(0, 0, new byte[0]);
+            player.clothing.ReceiveWearShirt(Int2Guid(0), 0, new byte[0]);
             Remove();
-            player.clothing.ReceiveWearVest(0, 0, new byte[0]);
+            player.clothing.ReceiveWearVest(Int2Guid(0), 0, new byte[0]);
             Remove();
+
+            await UniTask.SwitchToThreadPool();
         }
     }
 }

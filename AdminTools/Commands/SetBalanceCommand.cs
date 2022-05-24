@@ -10,50 +10,68 @@ using OpenMod.Unturned.Users;
 namespace AdminTools.Commands
 {
     [Command("setbalance")]
-    [CommandDescription("A command to set the balance of a player")]
-    [CommandActor(typeof(UnturnedUser))]
-    [CommandSyntax("/setbalance <playerName>")]
     [CommandAlias("setbal")]
+    [CommandDescription("A command to set the balance of a player")]
+    [CommandSyntax("[player] <balance>")]
+    [CommandActor(typeof(UnturnedUser))]
     public class SetBalanceCommand : UnturnedCommand
     {
-        private readonly IStringLocalizer _stringLocalizer;
-        private readonly IEconomyProvider _economyProvider;
-        
+        private readonly IEconomyProvider _economy;
+        private readonly IStringLocalizer _localizer;
+
         public SetBalanceCommand(IServiceProvider serviceProvider, IStringLocalizer stringLocalizer, IEconomyProvider economyProvider) : base(serviceProvider)
         {
-            _stringLocalizer = stringLocalizer;
-            _economyProvider = economyProvider;
+            _economy = economyProvider;
+            _localizer = stringLocalizer;
         }
 
         protected override async UniTask OnExecuteAsync()
         {
-            var player = (UnturnedUser) Context.Actor;
-            
-            if (Context.Parameters.Length < 2)
-            {
-                await player.PrintMessageAsync(_stringLocalizer["Commands:SetBalance:Error"]);
-                return;
-            }
+            UnturnedUser player = (UnturnedUser)Context.Actor;
 
-            if (Context.Parameters.TryGet<IUser>(0, out IUser? target))
+            switch (Context.Parameters.Length)
             {
-                if (Context.Parameters.TryGet<decimal>(1, out decimal balance))
-                {
-                    await _economyProvider.SetBalanceAsync(target!.Id, target.Type, balance);
-                    await player.PrintMessageAsync(_stringLocalizer["Commands:SetBalance:Success", new
+                case 1:
+                    if (Context.Parameters.TryGet<decimal>(0, out decimal balance1))
                     {
-                        Name = target.DisplayName,
-                        Balance = balance
-                    }]);
-                }
-                else
-                {
-                    await player.PrintMessageAsync(_stringLocalizer["Commands:SetBalance:Error"]);
-                }
-            }
-            else
-            {
-                await player.PrintMessageAsync(_stringLocalizer["Commands:SetBalance:Invalid"]);
+                        await _economy.SetBalanceAsync(player.Id, player.Type, balance1);
+                        await player.PrintMessageAsync(_localizer["Commands:SetBalance:Success", new
+                        {
+                            Name = "your",
+                            Balance = balance1
+                        }]);
+                    }
+                    else
+                    {
+                        await player.PrintMessageAsync(_localizer["Commands:SetBalance:Error"]);
+                    }
+                    break;
+                case 2:
+                    if (Context.Parameters.TryGet<IUser>(0, out IUser? target))
+                    {
+                        if (Context.Parameters.TryGet<decimal>(1, out decimal balance2))
+                        {
+                            await _economy.SetBalanceAsync(target!.Id, target.Type, balance2);
+                            await player.PrintMessageAsync(_localizer["Commands:SetBalance:Success", new
+                            {
+                                Name = target.DisplayName,
+                                Balance = balance2
+                            }]);
+                        }
+                        else
+                        {
+                            await player.PrintMessageAsync(_localizer["Commands:SetBalance:Error"]);
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        await player.PrintMessageAsync(_localizer["Commands:SetBalance:Invalid"]);
+                    }
+                    break;
+                default:
+                    await player.PrintMessageAsync(_localizer["Commands:SetBalance:Error"]);
+                    return;
             }
         }
     }

@@ -14,34 +14,29 @@ namespace AdminTools.Events
 {
     public class UnturnedPlayerTakingItemEventListener : IEventListener<UnturnedPlayerTakingItemEvent>
     {
-        private readonly IStringLocalizer _stringLocalizer;
+        private readonly IStringLocalizer _localizer;
+        private readonly IPermissionChecker _checker;
         private readonly IConfiguration _configuration;
-        private readonly IPermissionChecker _permissionChecker;
-        private readonly IUserManager _userManager;
+        private readonly IUserManager _manager;
 
         public UnturnedPlayerTakingItemEventListener(IStringLocalizer stringLocalizer, IPermissionChecker permissionChecker, IConfiguration configuration, IUserManager userManager)
         {
-            _stringLocalizer = stringLocalizer;
-            _permissionChecker = permissionChecker;
+            _localizer = stringLocalizer;
+            _checker = permissionChecker;
             _configuration = configuration;
-            _userManager = userManager;
+            _manager = userManager;
         }
 
         public async Task HandleEventAsync(object? sender, UnturnedPlayerTakingItemEvent @event)
         {
-            var find = _configuration.GetSection("Restrictions:Items").Get<List<Restriction>>().FirstOrDefault(x => x.Ids != null && x.Ids.Contains(@event.ItemData.item.id));
-
+            Restriction find = _configuration.GetSection("Restrictions:Items").Get<List<Restriction>>().FirstOrDefault(x => x.Ids != null && x.Ids.Contains(@event.ItemData.item.id));
             if (find != null && find.BypassPermission != null)
             {
-                var user = await _userManager.FindUserAsync(KnownActorTypes.Player, @event.Player.SteamId.ToString(), UserSearchMode.FindById);
-
-                var check = await _permissionChecker.CheckPermissionAsync(user!, find.BypassPermission);
-
+                IUser? user = await _manager.FindUserAsync(KnownActorTypes.Player, @event.Player.SteamId.ToString(), UserSearchMode.FindById);
+                PermissionGrantResult check = await _checker.CheckPermissionAsync(user!, find.BypassPermission);
                 if (check == PermissionGrantResult.Grant) return;
-
                 @event.IsCancelled = true;
-
-                await @event.Player.PrintMessageAsync(_stringLocalizer["Restrictions:Items"]);
+                await @event.Player.PrintMessageAsync(_localizer["Restrictions:Items"]);
             }
         }
     }

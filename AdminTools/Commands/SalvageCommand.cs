@@ -6,80 +6,72 @@ using OpenMod.Core.Commands;
 using OpenMod.Unturned.Commands;
 using OpenMod.Unturned.Users;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdminTools.Commands
 {
     [Command("salvage")]
     [CommandDescription("A command to set the salvage time of a player")]
-    [CommandSyntax("/salvage <time> | /salvage <playerName> <time>")]
+    [CommandSyntax("[player] <time>")]
     [CommandActor(typeof(UnturnedUser))]
     public class SalvageCommand : UnturnedCommand
     {
-        private readonly IStringLocalizer _stringLocalizer;
+        private readonly IStringLocalizer _localizer;
 
         public SalvageCommand(IServiceProvider serviceProvider, IStringLocalizer stringLocalizer) : base(serviceProvider)
         {
-            _stringLocalizer = stringLocalizer;
+            _localizer = stringLocalizer;
         }
 
         protected override async UniTask OnExecuteAsync()
         {
-            var player = (UnturnedUser)Context.Actor;
+            UnturnedUser player = (UnturnedUser)Context.Actor;
 
             switch (Context.Parameters.Length)
             {
                 case 1:
-
-                    if (Context.Parameters.TryGet<float>(0, out float value))
+                    if (Context.Parameters.TryGet<float>(0, out float time1))
                     {
                         await UniTask.SwitchToMainThread();
-                        player.Player.Player.interact.sendSalvageTimeOverride(value);
+                        player.Player.Player.interact.sendSalvageTimeOverride(time1);
                         await UniTask.SwitchToThreadPool();
-                        await player.PrintMessageAsync(_stringLocalizer["Commands:Salvage:Success:1", new
+                        await player.PrintMessageAsync(_localizer["Commands:Salvage:Success", new
                         {
-                            Time = value
+                            Name = "your",
+                            Time = time1
                         }]);
                     }
                     else
                     {
-                        throw new UserFriendlyException(_stringLocalizer["Commands:Salvage:Error:3"]);
+                        throw new UserFriendlyException(_localizer["Commands:Salvage:Error"]);
                     }
-
                     break;
                 case 2:
-
-                    if (Context.Parameters.TryGet<IUser>(0, out IUser? user))
+                    if (Context.Parameters.TryGet<IUser>(0, out IUser? iuser))
                     {
-                        var ass = (user as UnturnedUser)!;
-
-                        if (Context.Parameters.TryGet<float>(1, out float value2))
+                        UnturnedUser user = (UnturnedUser)iuser!;
+                        if (Context.Parameters.TryGet<float>(1, out float time2))
                         {
                             await UniTask.SwitchToMainThread();
-                            ass.Player.Player.interact.sendSalvageTimeOverride(value2);
+                            user.Player.Player.interact.sendSalvageTimeOverride(time2);
                             await UniTask.SwitchToThreadPool();
-                            await player.PrintMessageAsync(_stringLocalizer["Commands:Salvage:Success:2", new
+                            await player.PrintMessageAsync(_localizer["Commands:Salvage:Success", new
                             {
-                                Name = ass.DisplayName,
-                                Time = value2
+                                Name = user.DisplayName,
+                                Time = time2
                             }]);
                         }
                         else
                         {
-                            throw new UserFriendlyException(_stringLocalizer["Commands:Salvage:Error:3"]);
+                            throw new UserFriendlyException(_localizer["Commands:Salvage:Error"]);
                         }
                     }
                     else
                     {
-                        throw new UserFriendlyException(_stringLocalizer["Commands:Salvage:Error:2"]);
+                        throw new UserFriendlyException(_localizer["Commands:Salvage:Invalid"]);
                     }
-
                     break;
                 default:
-                    throw new CommandWrongUsageException(_stringLocalizer["Commands:Salvage:Error:1"]);
+                    throw new CommandWrongUsageException(_localizer["Commands:Salvage:Error"]);
             }
         }
     }

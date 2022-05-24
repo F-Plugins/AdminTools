@@ -1,6 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Localization;
-using OpenMod.API.Persistence;
 using OpenMod.API.Users;
 using OpenMod.Core.Commands;
 using OpenMod.Core.Users;
@@ -17,72 +16,105 @@ namespace AdminTools.Commands
     [CommandActor(typeof(UnturnedUser))]
     public class WhoIsCommand : UnturnedCommand
     {
-        private readonly IStringLocalizer _stringLocalizer;
-        private readonly IUserDataStore _userDataStore;
+        private readonly IUserDataStore _userData;
+
+        private readonly IStringLocalizer _localizer;
 
         public WhoIsCommand(IServiceProvider serviceProvider, IStringLocalizer stringLocalizer, IUserDataStore userDataStore) : base(serviceProvider)
         {
-            _userDataStore = userDataStore;
-            _stringLocalizer = stringLocalizer;
+            _userData = userDataStore;
+            _localizer = stringLocalizer;
         }
 
         protected override async UniTask OnExecuteAsync()
         {
-            var player = (UnturnedUser)Context.Actor;
+            UnturnedUser player = (UnturnedUser)Context.Actor;
 
             await UniTask.SwitchToMainThread();
-            if (Physics.Raycast(player.Player.Player.look.aim.position, player.Player.Player.look.aim.forward, out RaycastHit hit, 15f, (int)ERayMask.BARRICADE | (int)ERayMask.VEHICLE | (int)ERayMask.STRUCTURE))
+
+            Vector3 position = player.Player.Player.look.aim.position;
+            Vector3 forward = player.Player.Player.look.aim.forward;
+            int itemID = (int)ERayMask.BARRICADE | (int)ERayMask.VEHICLE | (int)ERayMask.STRUCTURE;
+
+            if (Physics.Raycast(position, forward, out RaycastHit hit, 5f, itemID))
             {
-                var vehicle = hit.transform.GetComponent<InteractableVehicle>();
 
-                if(vehicle != null)
+                Transform transform = hit.transform;
+
+                InteractableVehicle vehicle = transform.GetComponent<InteractableVehicle>();
+                if (vehicle != null)
                 {
-                    var data = await _userDataStore.GetUserDataAsync(vehicle.lockedOwner.ToString(), KnownActorTypes.Player);
-
-                    if (data == null) throw new CommandWrongUsageException(_stringLocalizer["Commands:WhoIs:Error"]);
-
-                    await player.PrintMessageAsync(_stringLocalizer["Commands:WhoIs:Success", new
+                    String? user = "Unknown";
+                    if (vehicle.isLocked)
+                    {
+                        UserData? data = await _userData.GetUserDataAsync(vehicle.lockedOwner.ToString(), KnownActorTypes.Player);
+                        if (data == null) throw new CommandWrongUsageException(_localizer["Commands:WhoIs:Error"]);
+                        user = data.LastDisplayName;
+                    }
+                    await player.PrintMessageAsync(_localizer["Commands:WhoIs:Success", new
                     {
                         Name = vehicle.asset.name.Replace("_", " "),
                         Id = vehicle.id,
-                        Player = data.LastDisplayName,
+                        Health = vehicle.health,
+                        Player = user,
                         Owner = vehicle.lockedOwner,
                         Group = vehicle.lockedGroup
                     }]);
                     return;
                 }
 
-                if(BarricadeManager.tryGetInfo(hit.transform, out byte x, out byte y, out ushort plant, out ushort index, out BarricadeRegion region))
+                InteractableBed bed = transform.GetComponent<InteractableBed>();
+                InteractableDoorHinge door = transform.GetComponent<InteractableDoorHinge>();
+                if (door != null) transform = transform.parent.parent;
+                BarricadeDrop barricadeDrop = BarricadeManager.FindBarricadeByRootTransform(transform);
+                if (barricadeDrop != null)
                 {
-                    var barricade = region.barricades[index];
-
-                    var data = await _userDataStore.GetUserDataAsync(barricade.owner.ToString(), KnownActorTypes.Player);
-
-                    if (data == null) throw new CommandWrongUsageException(_stringLocalizer["Commands:WhoIs:Error"]);
-
-                    await player.PrintMessageAsync(_stringLocalizer["Commands:WhoIs:Success", new
+                    BarricadeData barricade = barricadeDrop.GetServersideData();
+                    UserData? claim = null;
+                    if (bed != null) claim = await _userData.GetUserDataAsync(bed.owner.ToString(), KnownActorTypes.Player);
+                    UserData? data = await _userData.GetUserDataAsync(barricade.owner.ToString(), KnownActorTypes.Player);
+                    if (data == null) throw new CommandWrongUsageException(_localizer["Commands:WhoIs:Error"]);
+                    ushort maxHealth = barricade.barricade.asset.health;
+                    if (claim == null)
                     {
-                        Name = barricade.barricade.asset.name.Replace("_", " "),
-                        Id = barricade.barricade.id,
-                        Player = data.LastDisplayName,
-                        Owner = barricade.owner,
-                        Group = barricade.group
-                    }]);
+                        await player.PrintMessageAsync(_localizer["Commands:WhoIs:Success", new
+                        {
+                            Name = barricade.barricade.asset.name.Replace("_", " "),
+                            Id = barricade.barricade.asset.id,
+                            Health = barricade.barricade.health + "/" + maxHealth,
+                            Player = data.LastDisplayName,
+                            Owner = barricade.owner,
+                            Group = barricade.group
+                        }]);
+                    }
+                    else
+                    {
+                        await player.PrintMessageAsync(_localizer["Commands:WhoIs:SuccessBed", new
+                        {
+                            Name = barricade.barricade.asset.name.Replace("_", " "),
+                            Id = barricade.barricade.asset.id,
+                            Health = barricade.barricade.health + "/" + maxHealth,
+                            Player = data.LastDisplayName,
+                            Owner = barricade.owner,
+                            Group = barricade.group,
+                            Claim = claim.LastDisplayName
+                        }]);
+                    }
                     return;
                 }
 
-                if (StructureManager.tryGetInfo(hit.transform, out byte x1, out byte y1, out ushort index1, out StructureRegion region1))
+                StructureDrop structureDrop = StructureManager.FindStructureByRootTransform(transform);
+                if (structureDrop != null)
                 {
-                    var structure = region1.structures[index1];
-
-                    var data = await _userDataStore.GetUserDataAsync(structure.owner.ToString(), KnownActorTypes.Player);
-
-                    if (data == null) throw new CommandWrongUsageException(_stringLocalizer["Commands:WhoIs:Error"]);
-
-                    await player.PrintMessageAsync(_stringLocalizer["Commands:WhoIs:Success", new
+                    StructureData structure = structureDrop.GetServersideData();
+                    UserData? data = await _userData.GetUserDataAsync(structure.owner.ToString(), KnownActorTypes.Player);
+                    if (data == null) throw new CommandWrongUsageException(_localizer["Commands:WhoIs:Error"]);
+                    ushort maxHealth = structure.structure.asset.health;
+                    await player.PrintMessageAsync(_localizer["Commands:WhoIs:Success", new
                     {
                         Name = structure.structure.asset.name.Replace("_", " "),
-                        Id = structure.structure.id,
+                        Id = structure.structure.asset.id,
+                        Health = structure.structure.health + "/" + maxHealth,
                         Player = data.LastDisplayName,
                         Owner = structure.owner,
                         Group = structure.group
@@ -90,11 +122,11 @@ namespace AdminTools.Commands
                     return;
                 }
 
-                throw new CommandWrongUsageException(_stringLocalizer["Commands:WhoIs:NotLooking"]);
+                throw new CommandWrongUsageException(_localizer["Commands:WhoIs:NotLooking"]);
             }
             else
             {
-                throw new CommandWrongUsageException(_stringLocalizer["Commands:WhoIs:NotLooking"]);
+                throw new CommandWrongUsageException(_localizer["Commands:WhoIs:NotLooking"]);
             }
         }
     }

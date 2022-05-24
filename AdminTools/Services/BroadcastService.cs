@@ -3,14 +3,11 @@ using AdminTools.Models;
 using Cysharp.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using OpenMod.API.Ioc;
-using OpenMod.API.Users;
 using OpenMod.Core.Helpers;
 using SDG.Unturned;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AdminTools.Services
 {
@@ -19,8 +16,6 @@ namespace AdminTools.Services
     {
         private bool _enabled = false;
         private int _index = 0;
-
-
         private readonly IConfiguration _configuration;
 
         public BroadcastService(IConfiguration configuration)
@@ -43,7 +38,7 @@ namespace AdminTools.Services
 
         private void OnLoaded(int level)
         {
-            if(level == 2)
+            if (level == 2)
             {
                 _enabled = true;
                 AsyncHelper.Schedule("Feli.AdminTools.Broadcast", () => Broadcast().AsTask());
@@ -57,7 +52,7 @@ namespace AdminTools.Services
                 await UniTask.Delay(TimeSpan.FromSeconds(_configuration.GetSection("Broadcast:Timer").Get<double>()));
 
                 BroadcastMessage? message = null;
-                var list = _configuration.GetSection("Broadcast:Messages").Get<List<BroadcastMessage>>();
+                List<BroadcastMessage> list = _configuration.GetSection("Broadcast:Messages").Get<List<BroadcastMessage>>();
 
                 if (_configuration.GetSection("Broadcast:RandomOrder").Get<bool>())
                 {
@@ -65,12 +60,9 @@ namespace AdminTools.Services
                 }
                 else
                 {
-                    if (_index >= list.Count())
-                    {
-                        _index = 0;
-                    }
-
+                    if (_index >= list.Count()) _index = 0;
                     message = list[_index];
+                    _index++;
                 }
 
                 if (message != null && message.ImageURL != null && message.Message != null)
